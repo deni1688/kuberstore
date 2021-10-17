@@ -1,42 +1,39 @@
-import React, {useCallback, useState} from 'react';
+import React, {ChangeEvent, useCallback, useState} from 'react';
 
+
+const dataDefault = {
+    name: "",
+    desc: "",
+    stock: 0,
+    imageURL: ""
+};
 
 export function App() {
-    const [productName, setProductName] = useState("");
-    const [productDesc, setProductDesc] = useState("");
-    const [productStock, setProductStock] = useState(0);
-    const [productImageURL, setProductImageURL] = useState("");
-    const deps = [productName, productDesc, productStock, productImageURL];
-
-    const reset = useCallback(() => {
-        setProductName("");
-        setProductDesc("");
-        setProductStock(0);
-        setProductImageURL("");
-    }, []);
+    const [data, setData] = useState(dataDefault);
+    const [error, setError] = useState("");
+    const deps = Object.values(data);
 
     const handleSubmit = useCallback(() => {
         if(deps.some(f => !f)) {
-            alert("All fields are required!");
+            showError("All fields are required!");
             return;
         }
 
         fetch("https://product.free.beeceptor.com/product", {
             method: "POST",
-            body: JSON.stringify({
-                productName,
-                productDesc,
-                productStock,
-                productImageURL
-            }),
+            body: JSON.stringify(data),
             headers: {"Content-Type": "application/json"}
-        }).then(reset).catch(error => {
-            reset();
-            alert(error)
+        }).then(() => setData(dataDefault)).catch(err => {
+            setData(dataDefault)
+            showError(err.message);
         });
     },deps);
 
-
+    const setInput = ({target}:any) => setData({...data, [target?.name]: target?.value});
+    const showError = (msg: string) => {
+        setError(msg);
+        setTimeout(() => setError(""), 1000);
+    };
     
     return (
         <div className="container py-5">
@@ -47,25 +44,33 @@ export function App() {
                  <div className="card-body">
                     <div className="row">
                         <div className="col-6">
-                            <input placeholder="Product Name" type="text" className="form-control mb-1" value={productName} onChange={({target}) => setProductName(target.value)}/>
-                            <input placeholder="Product Description" type="text" className="form-control mb-1" value={productDesc} onChange={({target}) => setProductDesc(target.value)}/>
-                            <input placeholder="Product Stock" type="number" className="form-control mb-1" min={0} value={productStock} onChange={({target}) => setProductStock(parseInt(target.value))}/>
-                           
+                            <input placeholder="Product Name" type="text" name="name" className="form-control mb-1" value={data.name} onChange={setInput}/>
+                            <input placeholder="Product Description" type="text" name="desc" className="form-control mb-1" value={data.desc} onChange={setInput}/>
+                            <input 
+                                placeholder="Product Stock" 
+                                type="number" 
+                                name="stock" 
+                                className="form-control mb-1" 
+                                min={0} 
+                                value={data.stock} 
+                                onChange={({target}) => setData({...data, [target.name]: parseInt(target.value)})}/>
                         </div>
                      <div className="col-6">
                          <input 
                             placeholder="Product Image URL" 
                             type="text" 
                             className="form-control mb-1" 
-                            value={productImageURL} 
-                            onChange={({target}) => setProductImageURL(target.value)}/>
-                         {productImageURL && <img src={productImageURL} className="img-fluid"/>}
+                            name="imageURL"
+                            value={data.imageURL} 
+                            onChange={setInput}/>
+                         {data.imageURL && <img src={data.imageURL} className="img-fluid"/>}
                      </div>
                     </div> 
 
 
                 </div>
-                <div className="card-footer text-right">
+                <div className="card-footer d-flex justify-content-between align-items-center">
+                    <span className="text-danger">{error}</span>
                     <button className="btn btn-primary" onClick={handleSubmit}>Submit</button>
                 </div>
             </div> 
