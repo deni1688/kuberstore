@@ -13,6 +13,12 @@ export function App() {
     const [error, setError] = useState("");
     const deps = Object.values(data);
 
+    const setInput = ({target}:any) => setData({...data, [target?.name]: target?.value});
+    const showError = (msg: string) => {
+        setError(msg);
+        setTimeout(() => setError(""), 1000);
+    };
+
     const handleSubmit = useCallback(() => {
         if(deps.some(f => !f)) {
             showError("All fields are required!");
@@ -29,12 +35,6 @@ export function App() {
         });
     },deps);
 
-    const setInput = ({target}:any) => setData({...data, [target?.name]: target?.value});
-    const showError = (msg: string) => {
-        setError(msg);
-        setTimeout(() => setError(""), 1000);
-    };
-    
     return (
         <div className="container py-5">
             <div className="card">
