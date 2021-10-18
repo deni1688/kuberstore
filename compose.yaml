@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  productclient:
+    build: ./ui
+    ports:
+      - "8877:80"
+
+

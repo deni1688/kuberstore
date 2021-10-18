@@ -13,7 +13,7 @@ export function App() {
     const [error, setError] = useState("");
     const deps = Object.values(data);
 
-    const setInput = ({target}:any) => setData({...data, [target?.name]: target?.value});
+    const setInput = ({target}:ChangeEvent<HTMLInputElement>) => setData({...data, [target?.name]: target?.value});
     const showError = (msg: string) => {
         setError(msg);
         setTimeout(() => setError(""), 1000);
@@ -25,7 +25,7 @@ export function App() {
             return;
         }
 
-        fetch("https://product.free.beeceptor.com/product", {
+        fetch("http://product-admin-server/products", {
             method: "POST",
             body: JSON.stringify(data),
             headers: {"Content-Type": "application/json"}
@@ -44,28 +44,39 @@ export function App() {
                  <div className="card-body">
                     <div className="row">
                         <div className="col-6">
-                            <input placeholder="Product Name" type="text" name="name" className="form-control mb-1" value={data.name} onChange={setInput}/>
-                            <input placeholder="Product Description" type="text" name="desc" className="form-control mb-1" value={data.desc} onChange={setInput}/>
-                            <input 
-                                placeholder="Product Stock" 
-                                type="number" 
-                                name="stock" 
-                                className="form-control mb-1" 
-                                min={0} 
-                                value={data.stock} 
+                            <input
+                                placeholder="Product Name"
+                                type="text"
+                                name="name"
+                                className="form-control mb-1"
+                                value={data.name}
+                                onChange={setInput}/>
+                            <input
+                                placeholder="Product Description"
+                                type="text"
+                                name="desc"
+                                className="form-control mb-1"
+                                value={data.desc} onChange={setInput}/>
+                            <input
+                                placeholder="Product Stock"
+                                type="number"
+                                name="stock"
+                                className="form-control mb-1"
+                                min={0}
+                                value={data.stock}
                                 onChange={({target}) => setData({...data, [target.name]: parseInt(target.value)})}/>
                         </div>
                      <div className="col-6">
-                         <input 
-                            placeholder="Product Image URL" 
-                            type="text" 
-                            className="form-control mb-1" 
+                         <input
+                            placeholder="Product Image URL"
+                            type="text"
+                            className="form-control mb-1"
                             name="imageURL"
-                            value={data.imageURL} 
+                            value={data.imageURL}
                             onChange={setInput}/>
                          {data.imageURL && <img src={data.imageURL} className="img-fluid"/>}
                      </div>
-                    </div> 
+                    </div>
 
 
                 </div>
@@ -73,7 +84,7 @@ export function App() {
                     <span className="text-danger">{error}</span>
                     <button className="btn btn-primary" onClick={handleSubmit}>Submit</button>
                 </div>
-            </div> 
+            </div>
         </div>
     );
 }
