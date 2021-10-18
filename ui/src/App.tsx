@@ -25,7 +25,7 @@ export function App() {
             return;
         }
 
-        fetch("http://product-admin-server/products", {
+        fetch("http://localhost:8888/products", {
             method: "POST",
             body: JSON.stringify(data),
             headers: {"Content-Type": "application/json"}

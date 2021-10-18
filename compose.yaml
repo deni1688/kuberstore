@@ -5,5 +5,18 @@ services:
     build: ./ui
     ports:
       - "8877:80"
-
+    depends_on:
+      - adminserver
+  adminserver:
+    build: ./admin
+    ports:
+      - "8888:8888"
+    depends_on:
+      - rabbitmq
+  rabbitmq:
+    image: "rabbitmq:management-alpine"
+    container_name: 'rabbitmq'
+    ports:
+      - "5672:5672"
+      - "15672:15672"
 
