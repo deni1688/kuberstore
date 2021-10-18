@@ -2,7 +2,6 @@ FROM alpine:latest
 
 WORKDIR /app
 
-COPY adminserver .
+COPY catalogserver .
 
-CMD ./adminserver
-
+CMD ./catalogserver

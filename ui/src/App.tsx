@@ -10,18 +10,18 @@ const dataDefault = {
 
 export function App() {
     const [data, setData] = useState(dataDefault);
-    const [error, setError] = useState("");
+    const [msg, setMessage] = useState({type: "", text: ""});
     const deps = Object.values(data);
 
     const setInput = ({target}:ChangeEvent<HTMLInputElement>) => setData({...data, [target?.name]: target?.value});
-    const showError = (msg: string) => {
-        setError(msg);
-        setTimeout(() => setError(""), 1000);
+    const showMessage = (text: string, type: string = "info") => {
+        setMessage({text, type});
+        setTimeout(() => setMessage({text: "", type: ""}), 3000);
     };
 
     const handleSubmit = useCallback(() => {
         if(deps.some(f => !f)) {
-            showError("All fields are required!");
+            showMessage("All fields are required!");
             return;
         }
 
@@ -29,9 +29,12 @@ export function App() {
             method: "POST",
             body: JSON.stringify(data),
             headers: {"Content-Type": "application/json"}
-        }).then(() => setData(dataDefault)).catch(err => {
+        }).then(res => res.json()).then(res => {
             setData(dataDefault)
-            showError(err.message);
+            showMessage(res.message, "success")
+        }).catch(err => {
+            setData(dataDefault)
+            showMessage(err.message, "danger");
         });
     },deps);
 
@@ -81,7 +84,7 @@ export function App() {
 
                 </div>
                 <div className="card-footer d-flex justify-content-between align-items-center">
-                    <span className="text-danger">{error}</span>
+                    <span className={"text-"+msg.type}>{msg.text}</span>
                     <button className="btn btn-primary" onClick={handleSubmit}>Submit</button>
                 </div>
             </div>

@@ -1,24 +1,35 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/streadway/amqp"
-	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
+type product struct {
+	ID       string `json:"id,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Desc     string `json:"desc,omitempty"`
+	ImageUrl string `json:"imageURL,omitempty"`
+	Stock    int    `json:"stock,omitempty"`
+}
+
 func main() {
-	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672")
+	conn, err := amqp.Dial("amqp://guest:guest@" + os.Getenv("RABBIT_MQ_URI"))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
+	defer conn.Close()
 
 	ch, err := conn.Channel()
 	if err != nil {
-		log.Fatalln(err)
-
+		log.Fatal("error getting connection", err)
 	}
+	defer ch.Close()
 
 	if err := ch.ExchangeDeclare(
 		"products.exchange",
@@ -36,11 +47,15 @@ func main() {
 	r.Use(CORSMiddleware())
 
 	r.POST("/products", func(c *gin.Context) {
-		body, _ := io.ReadAll(c.Request.Body)
+		var p product
+		_ = json.NewDecoder(c.Request.Body).Decode(&p)
+
+		p.ID = uuid.New().String()
+		body, _ := json.Marshal(p)
 
 		_ = ch.Publish(
 			"products.exchange",
-			"products.added"	,
+			"products.added",
 			false,
 			false,
 			amqp.Publishing{
@@ -50,7 +65,7 @@ func main() {
 		)
 
 		c.JSON(http.StatusOK, gin.H{
-			"message": "event published",
+			"message": "product created - id("+p.ID+")",
 		})
 	})
 

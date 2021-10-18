@@ -5,18 +5,41 @@ services:
     build: ./ui
     ports:
       - "8877:80"
-    depends_on:
-      - adminserver
+    networks:
+      - "kubestore_net"
+
   adminserver:
     build: ./admin
+    restart: unless-stopped
     ports:
       - "8888:8888"
+    environment:
+      RABBIT_MQ_URI: rabbitmq
     depends_on:
       - rabbitmq
+    networks:
+      - "kubestore_net"
+
+  catalogserver:
+    build: ./catalog
+    restart: unless-stopped
+    environment:
+      RABBIT_MQ_URI: rabbitmq
+    depends_on:
+      - rabbitmq
+    networks:
+      - "kubestore_net"
+
   rabbitmq:
     image: "rabbitmq:management-alpine"
-    container_name: 'rabbitmq'
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - "kubestore_net"
+
+networks:
+  kubestore_net:
+    driver: "bridge"
+
 

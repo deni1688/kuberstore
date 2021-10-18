@@ -2,11 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/streadway/amqp"
 	"log"
-	"net/http"
 	"os"
 )
 
@@ -43,47 +40,53 @@ func main() {
 		log.Fatal("error initializing exchange", err)
 	}
 
-	r := gin.Default()
-	r.Use(CORSMiddleware())
-
-	r.POST("/products", func(c *gin.Context) {
-		var p product
-		_ = json.NewDecoder(c.Request.Body).Decode(&p)
-
-		p.ID = uuid.NewString()
-		body, _ := json.Marshal(p)
-
-		_ = ch.Publish(
-			"products.exchange",
-			"products.added",
-			false,
-			false,
-			amqp.Publishing{
-				ContentType: "application/json",
-				Body:        body,
-			},
-		)
-
-		c.JSON(http.StatusOK, gin.H{
-			"message": "event published",
-		})
-	})
-
-	log.Fatal(r.Run(":8888"))
-}
-
-func CORSMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-
-		c.Next()
+	q, err := ch.QueueDeclare(
+		"",
+		false,
+		false,
+		true,
+		false,
+		nil,
+	)
+	if err != nil {
+		log.Fatal("error initializing a queue")
 	}
+
+	err = ch.QueueBind(
+		q.Name,
+		"products.added",
+		"products.exchange",
+		false,
+		nil)
+	if err != nil {
+		log.Fatal("error binding a queue", err)
+	}
+
+	msgs, err := ch.Consume(
+		q.Name,
+		"",
+		true,
+		false,
+		false,
+		false,
+		nil,
+	)
+
+	if err != nil {
+		log.Fatal("error consuming queue messages:", err)
+	}
+
+	p := new(product)
+	forever := make(chan bool)
+
+	go func() {
+		for d := range msgs {
+			_ = json.Unmarshal(d.Body, &p)
+			log.Printf("New products event of type %s with id %s", d.RoutingKey, p.ID)
+		}
+	}()
+
+	log.Printf(" [*] Waiting for product events. To exit press CTRL+C")
+	<-forever
 }
+
