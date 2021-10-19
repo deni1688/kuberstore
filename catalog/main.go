@@ -18,6 +18,9 @@ type product struct {
 
 func main() {
 	conn, err := connect()
+	if err != nil {
+		log.Fatal("error getting connection", err)
+	}
 	defer conn.Close()
 
 	ch, err := conn.Channel()

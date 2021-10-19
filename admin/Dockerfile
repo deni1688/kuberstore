@@ -2,7 +2,7 @@ FROM alpine:latest
 
 WORKDIR /app
 
-COPY adminserver .
+COPY app .
 
-CMD ./adminserver
+CMD ./app
 

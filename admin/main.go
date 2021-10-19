@@ -45,7 +45,7 @@ func main() {
 	}
 
 	r := gin.Default()
-	r.Use(CORSMiddleware())
+	r.Use(corsMiddleware())
 
 	r.POST("/products", func(c *gin.Context) {
 		var p product
@@ -90,7 +90,7 @@ func connect() (*amqp.Connection, error) {
 	return conn, err
 }
 
-func CORSMiddleware() gin.HandlerFunc {
+func corsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
