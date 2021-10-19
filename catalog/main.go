@@ -5,6 +5,7 @@ import (
 	"github.com/streadway/amqp"
 	"log"
 	"os"
+	"time"
 )
 
 type product struct {
@@ -16,10 +17,7 @@ type product struct {
 }
 
 func main() {
-	conn, err := amqp.Dial("amqp://guest:guest@" + os.Getenv("RABBIT_MQ_URI"))
-	if err != nil {
-		log.Fatal(err)
-	}
+	conn, err := connect()
 	defer conn.Close()
 
 	ch, err := conn.Channel()
@@ -88,5 +86,22 @@ func main() {
 
 	log.Printf(" [*] Waiting for product events. To exit press CTRL+C")
 	<-forever
+}
+
+func connect() (*amqp.Connection, error) {
+	retries := 6
+
+	var conn *amqp.Connection
+	var err error
+
+	for i := 0; i < retries; i++ {
+		conn, err = amqp.Dial("amqp://guest:guest@" + os.Getenv("RABBIT_MQ_URI"))
+		if err == nil {
+			return conn, err
+		}
+		time.Sleep(1 * time.Second)
+	}
+
+	return conn, err
 }
 

@@ -3,13 +3,22 @@ version: "3.9"
 services:
   productclient:
     build: ./ui
+    image: deni1688/pui:latest
     ports:
       - "8877:80"
     networks:
-      - "kubestore_net"
+      - kubestore_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
 
   adminserver:
     build: ./admin
+    image: deni1688/adminserver:latest
     restart: unless-stopped
     ports:
       - "8888:8888"
@@ -18,28 +27,42 @@ services:
     depends_on:
       - rabbitmq
     networks:
-      - "kubestore_net"
+      - kubestore_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
 
   catalogserver:
     build: ./catalog
+    image: deni1688/catalogserver:latest
     restart: unless-stopped
     environment:
       RABBIT_MQ_URI: rabbitmq
     depends_on:
       - rabbitmq
     networks:
-      - "kubestore_net"
+      - kubestore_net
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
 
   rabbitmq:
-    image: "rabbitmq:management-alpine"
+    image: rabbitmq:management-alpine
     ports:
       - "5672:5672"
       - "15672:15672"
     networks:
-      - "kubestore_net"
+      - kubestore_net
 
 networks:
   kubestore_net:
-    driver: "bridge"
 
 

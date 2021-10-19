@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 type product struct {
@@ -19,7 +20,7 @@ type product struct {
 }
 
 func main() {
-	conn, err := amqp.Dial("amqp://guest:guest@" + os.Getenv("RABBIT_MQ_URI"))
+	conn, err := connect()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -70,6 +71,23 @@ func main() {
 	})
 
 	log.Fatal(r.Run(":8888"))
+}
+
+func connect() (*amqp.Connection, error) {
+	retries := 6
+
+	var conn *amqp.Connection
+	var err error
+
+	for i := 0; i < retries; i++ {
+		conn, err = amqp.Dial("amqp://guest:guest@" + os.Getenv("RABBIT_MQ_URI"))
+		if err == nil {
+			return conn, err
+		}
+		time.Sleep(1 * time.Second)
+	}
+
+	return conn, err
 }
 
 func CORSMiddleware() gin.HandlerFunc {
