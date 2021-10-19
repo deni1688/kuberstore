@@ -54,23 +54,23 @@ services:
         max_attempts: 3
         window: 120s
 
-  warehouseserver:
-    build: ./warehouse
-    image: deni1688/warehouseserver:latest
-    restart: unless-stopped
-    environment:
-      RABBIT_MQ_URI: rabbitmq
-    depends_on:
-      - rabbitmq
-    networks:
-      - kubestore_net
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
+#  warehouseserver:
+#    build: ./warehouse
+#    image: deni1688/warehouseserver:latest
+#    restart: unless-stopped
+#    environment:
+#      RABBIT_MQ_URI: rabbitmq
+#    depends_on:
+#      - rabbitmq
+#    networks:
+#      - kubestore_net
+#    deploy:
+#      replicas: 1
+#      restart_policy:
+#        condition: on-failure
+#        delay: 5s
+#        max_attempts: 3
+#        window: 120s
 
   rabbitmq:
     image: rabbitmq:management-alpine
