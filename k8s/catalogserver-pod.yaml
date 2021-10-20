@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.24.0 (4a2a0458)
+  labels:
+    io.kompose.network/kubestore-net: "true"
+    io.kompose.service: catalogserver
+  name: catalogserver
+spec:
+  containers:
+    - env:
+        - name: RABBIT-MQ-URI
+          value: rabbitmq
+      image: deni1688/catalogserver:latest
+      name: catalogserver
+      resources: {}
+  restartPolicy: OnFailure

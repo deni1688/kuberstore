@@ -1,5 +1,6 @@
 package de.codebydenis.warehouse;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,9 +11,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class StockItem {
-    private String id;
-    private String name;
-    private String desc;
+    @JsonProperty("id")
+    private String productId;
     private int stock;
-    private String imageURL;
 }
