@@ -2,7 +2,7 @@ version: "3"
 
 services:
   productclient:
-    build: ./ui
+    build: client
     image: deni1688/pui:latest
     ports:
       - "8877:80"
@@ -17,13 +17,13 @@ services:
         window: 120s
 
   adminserver:
-    build: ./admin
+    build: admin
     image: deni1688/adminserver:latest
     restart: unless-stopped
     ports:
       - "8888:8888"
     environment:
-      RABBIT_MQ_URI: rabbitmq
+      RABBIT_MQ_URI: rabbitmq.yaml
     depends_on:
       - rabbitmq
     networks:
@@ -37,11 +37,11 @@ services:
         window: 120s
 
   catalogserver:
-    build: ./catalog
+    build: catalog
     image: deni1688/catalogserver:latest
     restart: unless-stopped
     environment:
-      RABBIT_MQ_URI: rabbitmq
+      RABBIT_MQ_URI: rabbitmq.yaml
     depends_on:
       - rabbitmq
     networks:
@@ -55,11 +55,11 @@ services:
         window: 120s
 
   warehouseserver:
-    build: ./warehouse
+    build: warehouse
     image: deni1688/warehouseserver:latest
     restart: unless-stopped
     environment:
-      RABBIT_MQ_URI: rabbitmq
+      RABBIT_MQ_URI: rabbitmq.yaml
     depends_on:
       - rabbitmq
     networks:

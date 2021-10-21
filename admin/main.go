@@ -26,6 +26,8 @@ func main() {
 	}
 	defer conn.Close()
 
+	log.Println("rabbitmq connection established:", !conn.IsClosed())
+
 	ch, err := conn.Channel()
 	if err != nil {
 		log.Fatal("error getting connection", err)
@@ -54,7 +56,7 @@ func main() {
 		p.ID = uuid.New().String()
 		body, _ := json.Marshal(p)
 
-		_ = ch.Publish(
+		err = ch.Publish(
 			"products.exchange",
 			"products.added",
 			false,
@@ -64,6 +66,9 @@ func main() {
 				Body:        body,
 			},
 		)
+		if err != nil {
+			log.Println("error publishing message:", err.Error())
+		}
 
 		c.JSON(http.StatusOK, gin.H{
 			"message": "product created - id("+p.ID+")",

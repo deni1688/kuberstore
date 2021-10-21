@@ -25,7 +25,7 @@ export function App() {
             return;
         }
 
-        fetch("http://localhost:8888/products", {
+        fetch("http://192.168.49.2:30922/products", {
             method: "POST",
             body: JSON.stringify(data),
             headers: {"Content-Type": "application/json"}

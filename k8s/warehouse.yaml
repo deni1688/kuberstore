@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: warehouseserver
+spec:
+  selector:
+    matchLabels:
+      app: warehouseserver
+  template:
+    metadata:
+      labels:
+        app: warehouseserver
+    spec:
+      containers:
+      - image: deni1688/warehouseserver:latest
+        name: warehouseserver
+        resources: {}
+        imagePullPolicy: Always
+        env:
+          - name: RABBIT_MQ_URI
+            valueFrom:
+              configMapKeyRef:
+                key: rabbitmq-uri
+                name: kubestore-config
+      restartPolicy: Always

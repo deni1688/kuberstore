@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adminserver
+spec:
+  selector:
+    matchLabels:
+      app: adminserver
+  template:
+    metadata:
+      labels:
+        app: adminserver
+    spec:
+      containers:
+      - image: deni1688/adminserver:latest
+        name: adminserver
+        resources: {}
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8888
+        env:
+        - name: RABBIT_MQ_URI
+          valueFrom:
+            configMapKeyRef:
+              key: rabbitmq-uri
+              name: kubestore-config
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: adminserver-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: adminserver
+  ports:
+  - protocol: TCP
+    port: 8888
+    targetPort: 8888

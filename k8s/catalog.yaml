@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalogserver
+spec:
+  selector:
+    matchLabels:
+      app: catalogserver
+  template:
+    metadata:
+      labels:
+        app: catalogserver
+    spec:
+      containers:
+      - image: deni1688/catalogserver:latest
+        name: catalogserver
+        resources: {}
+        imagePullPolicy: Always
+        env:
+          - name: RABBIT_MQ_URI
+            valueFrom:
+              configMapKeyRef:
+                key: rabbitmq-uri
+                name: kubestore-config
+      restartPolicy: Always
