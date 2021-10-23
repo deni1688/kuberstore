@@ -5,6 +5,10 @@ metadata:
   labels:
     name: kubestore-ingress
 spec:
+  tls:
+  - hosts:
+      - kubestore.de
+    secretName: kubestore-tls
   rules:
   - host: kubestore.de
     http:
