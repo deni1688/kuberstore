@@ -16,9 +16,9 @@ services:
         max_attempts: 3
         window: 120s
 
-  adminserver:
-    build: admin
-    image: deni1688/adminserver:latest
+  publisherserver:
+    build: publisher
+    image: deni1688/publisherserver:latest
     restart: unless-stopped
     ports:
       - "8888:8888"

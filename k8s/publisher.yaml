@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: adminserver
+  name: publisherserver
 spec:
   selector:
     matchLabels:
-      app: adminserver
+      app: publisherserver
   template:
     metadata:
       labels:
-        app: adminserver
+        app: publisherserver
     spec:
       containers:
-      - image: deni1688/adminserver:latest
-        name: adminserver
+      - image: deni1688/publisherserver:latest
+        name: publisherserver
         resources: {}
         imagePullPolicy: Always
         ports:
@@ -31,10 +31,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: adminserver-service
+  name: publisherserver-service
 spec:
   selector:
-    app: adminserver
+    app: publisherserver
   ports:
   - protocol: TCP
     port: 8888

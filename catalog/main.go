@@ -8,12 +8,11 @@ import (
 	"time"
 )
 
-type product struct {
-	ID       string `json:"id,omitempty"`
-	Name     string `json:"name,omitempty"`
-	Desc     string `json:"desc,omitempty"`
-	ImageUrl string `json:"imageURL,omitempty"`
-	Stock    int    `json:"stock,omitempty"`
+type listing struct {
+	ProductID string `json:"id,omitempty"`
+	Name      string `json:"name,omitempty"`
+	Desc      string `json:"desc,omitempty"`
+	ImageUrl  string `json:"imageURL,omitempty"`
 }
 
 func main() {
@@ -77,13 +76,13 @@ func main() {
 		log.Fatal("error consuming queue messages:", err)
 	}
 
-	p := new(product)
+	listingItem := new(listing)
 	forever := make(chan bool)
 
 	go func() {
 		for d := range msgs {
-			_ = json.Unmarshal(d.Body, &p)
-			log.Printf("New products event of type %s with id %s", d.RoutingKey, p.ID)
+			_ = json.Unmarshal(d.Body, &listingItem)
+			log.Printf("New products event of type %s with id %s", d.RoutingKey, listingItem.ProductID)
 		}
 	}()
 
@@ -107,4 +106,3 @@ func connect() (*amqp.Connection, error) {
 
 	return conn, err
 }
-
