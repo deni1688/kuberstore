@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubestore-ingress
+  labels:
+    name: kubestore-ingress
+spec:
+  rules:
+  - host: kubestore.de
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: productclient-service 
+            port: 
+              number: 8877
+      - pathType: Prefix
+        path: "/products"
+        backend:
+          service:
+            name: adminserver-service 
+            port: 
+              number: 8888

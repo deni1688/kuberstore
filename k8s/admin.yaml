@@ -33,7 +33,6 @@ kind: Service
 metadata:
   name: adminserver-service
 spec:
-  type: LoadBalancer
   selector:
     app: adminserver
   ports:

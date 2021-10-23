@@ -25,7 +25,7 @@ export function App() {
             return;
         }
 
-        fetch("http://192.168.49.2:30922/products", {
+        fetch("http://kubestore.de/products", {
             method: "POST",
             body: JSON.stringify(data),
             headers: {"Content-Type": "application/json"}

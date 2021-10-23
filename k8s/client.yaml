@@ -29,9 +29,7 @@ metadata:
 spec:
   selector:
     app: productclient
-  type: LoadBalancer
   ports:
   - protocol: TCP
     port: 8877
     targetPort: 80
-    nodePort: 30000
