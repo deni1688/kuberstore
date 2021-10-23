@@ -1,0 +1,15 @@
+spring:
+  rabbitmq:
+    host: "${RABBIT_MQ_URI}"
+    password: guest
+    username: guest
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        hbm2ddl:
+          auto: create
+  datasource:
+    url: "jdbc:postgresql://${POSTGRES_URI}/stocks"
+    username: postgres
+    password: admin123

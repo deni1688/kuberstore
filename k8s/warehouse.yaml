@@ -22,7 +22,7 @@ spec:
               configMapKeyRef:
                 key: rabbitmq-uri
                 name: kubestore-config
-          - name: POSGRES_URI
+          - name: POSTGRES_URI
             valueFrom:
               configMapKeyRef:
                 key: postgrestore-uri
