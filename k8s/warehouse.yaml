@@ -22,4 +22,9 @@ spec:
               configMapKeyRef:
                 key: rabbitmq-uri
                 name: kubestore-config
+          - name: POSGRES_URI
+            valueFrom:
+              configMapKeyRef:
+                key: postgrestore-uri
+                name: kubestore-config
       restartPolicy: Always

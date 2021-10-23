@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlstore
+  labels:
+    app: sqlstore
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: sqlstore
+      labels:
+        app: sqlstore
+    spec:
+      containers:
+        - name: sqlstore
+          image: postgres:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              value: admin123
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: sqlstore
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: sqlstore-service
+spec:
+  selector:
+    app: sqlstore
+  ports:
+    - port: 5432

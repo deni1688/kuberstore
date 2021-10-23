@@ -4,4 +4,5 @@ metadata:
   name: kubestore-config
 data:
   rabbitmq-uri: rabbitmq-broker-service
-  monogstore-uri: mongostore-service
+  mongostore-uri: mongostore-service
+  postgrestore-uri: sqlstore-service

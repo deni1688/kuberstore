@@ -22,4 +22,9 @@ spec:
               configMapKeyRef:
                 key: rabbitmq-uri
                 name: kubestore-config
+          - name: MONGO_URI
+            valueFrom:
+              configMapKeyRef:
+                key: mongostore-uri
+                name: kubestore-config
       restartPolicy: Always
