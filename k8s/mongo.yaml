@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongostore
+  labels:
+    app: mongostore
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: mongostore
+      labels:
+        app: mongostore
+    spec:
+      containers:
+        - name: mongostore
+          image: mongo:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: admin
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: admin123
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: mongostore
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongostrore-service
+spec:
+  selector:
+    app: mongostrore
+  ports:
+    - port: 27017

@@ -15,6 +15,7 @@ spec:
       containers:
       - image: rabbitmq:management-alpine
         resources: {}
+        imagePullPolicy: IfNotPresent
         name: rabbitmq
         ports:
           - containerPort: 5672
