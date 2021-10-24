@@ -36,11 +36,9 @@ func newRepo() (*repo, error) {
 	return &repo{client}, nil
 }
 
-
-
-func (d *repo) insert(item listing) (string, error)  {
+func (r *repo) insert(item listing) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	collection := d.client.Database("catalog").Collection("listings")
+	collection := r.client.Database("catalog").Collection("listings")
 	defer cancel()
 
 	res, err := collection.InsertOne(ctx, bson.M{
@@ -56,3 +54,9 @@ func (d *repo) insert(item listing) (string, error)  {
 	return res.InsertedID.(primitive.ObjectID).Hex(), nil
 }
 
+func (r *repo) close() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	return r.client.Disconnect(ctx)
+}

@@ -36,7 +36,7 @@ func newBroker() (*broker, error) {
 	return &broker{conn, ch}, nil
 }
 
-func (b *broker) publish(body []byte) error  {
+func (b *broker) publish(body []byte) error {
 	return b.ch.Publish(
 		"products.exchange",
 		"products.added",
@@ -47,4 +47,13 @@ func (b *broker) publish(body []byte) error  {
 			Body:        body,
 		},
 	)
+}
+
+func (b *broker) close() error {
+	err := new(error)
+
+	*err = b.conn.Close()
+	*err = b.ch.Close()
+
+	return *err
 }

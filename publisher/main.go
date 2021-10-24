@@ -15,9 +15,10 @@ type product struct {
 
 func main() {
 	b, err := newBroker()
-	if err !=nil {
+	if err != nil {
 		log.Fatal("error connecting to broker", err)
 	}
+	defer b.close()
 
 	r := gin.Default()
 	r.Use(cors())
@@ -26,4 +27,3 @@ func main() {
 
 	log.Fatal(r.Run(":8888"))
 }
-

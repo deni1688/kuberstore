@@ -59,7 +59,7 @@ func newBroker() (*broker, error) {
 	return &broker{conn, ch, &q}, nil
 }
 
-func (b *broker) listen() (<-chan amqp.Delivery, error) {
+func (b *broker) subscribe() (<-chan amqp.Delivery, error) {
 	return b.ch.Consume(
 		b.q.Name,
 		"",
@@ -69,4 +69,13 @@ func (b *broker) listen() (<-chan amqp.Delivery, error) {
 		false,
 		nil,
 	)
+}
+
+func (b *broker) close() error {
+	err := new(error)
+
+	*err = b.conn.Close()
+	*err = b.ch.Close()
+
+	return *err
 }

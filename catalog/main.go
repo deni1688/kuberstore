@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 )
 
@@ -17,32 +16,23 @@ func main() {
 	if err != nil {
 		log.Fatal("error connecting mongo client", err)
 	}
-
+	defer r.close()
 
 	b, err := newBroker()
 	if err != nil {
 		log.Fatal("error connecting broker", err)
 	}
+	defer b.close()
 
-	msgs, err := b.listen()
+	msgs, err := b.subscribe()
 	if err != nil {
 		log.Fatal("error getting messages", err)
 	}
 
 	forever := make(chan bool)
 	go func() {
-		for d := range msgs {
-			var item listing
-			_ = json.Unmarshal(d.Body, &item)
-
-			log.Printf("new products event of type %s with id %s", d.RoutingKey, item.ProductID)
-
-			id, err := r.insert(item)
-			if err != nil {
-				log.Println("error inserting item", err)
-			} else {
-				log.Println("inserted catalog listing with id: " + id)
-			}
+		for m := range msgs {
+			messageHandler(r, m)
 		}
 	}()
 
