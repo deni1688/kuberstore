@@ -33,9 +33,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongostrore-service
+  name: mongostore-service
 spec:
   selector:
-    app: mongostrore
+    app: mongostore
   ports:
     - port: 27017
