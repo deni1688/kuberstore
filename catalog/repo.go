@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"log"
-	"os"
 	"time"
 )
 
@@ -16,11 +16,11 @@ type repo struct {
 	client *mongo.Client
 }
 
-func newRepo() (*repo, error) {
+func newRepo(user, pass, addr, dbName string) (*repo, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	uri := "mongodb://admin:admin123@" + os.Getenv("MONGO_URI") + "/catalog?authSource=admin"
+	uri := fmt.Sprintf("mongodb://%s:%s@%s/%s?authSource=admin", user, pass, addr, dbName)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(uri))
 	if err != nil {
 		return nil, err

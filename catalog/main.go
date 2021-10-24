@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 )
 
 type listing struct {
@@ -11,14 +12,23 @@ type listing struct {
 	ImageUrl  string `json:"imageURL,omitempty"`
 }
 
+var (
+	dbUser = os.Getenv("DB_USER")
+	dbPass = os.Getenv("DB_PASS")
+	dbAddr = os.Getenv("DB_ADDR")
+	mqUser = os.Getenv("MQ_USER")
+	mqPass = os.Getenv("MQ_PASS")
+	mqAddr = os.Getenv("MQ_ADDR")
+)
+
 func main() {
-	r, err := newRepo()
+	r, err := newRepo(dbUser, dbPass, dbAddr, "catalog")
 	if err != nil {
 		log.Fatal("error connecting mongo client", err)
 	}
 	defer r.close()
 
-	b, err := newBroker()
+	b, err := newBroker(mqUser, mqPass, mqAddr)
 	if err != nil {
 		log.Fatal("error connecting broker", err)
 	}

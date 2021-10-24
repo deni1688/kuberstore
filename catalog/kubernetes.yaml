@@ -17,12 +17,22 @@ spec:
         resources: {}
         imagePullPolicy: Always
         env:
-          - name: RABBIT_MQ_URI
+          # rabbitmq
+          - name: MQ_USER
+            value: guest
+          - name: MQ_PASS
+            value: guest
+          - name: MQ_ADDR
             valueFrom:
               configMapKeyRef:
                 key: rabbitmq-uri
                 name: kubestore-config
-          - name: MONGO_URI
+          # mongo
+          - name: DB_USER
+            value: admin
+          - name: DB_PASS
+            value: admin123
+          - name: DB_ADDR
             valueFrom:
               configMapKeyRef:
                 key: mongostore-uri
