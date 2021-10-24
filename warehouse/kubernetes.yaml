@@ -17,14 +17,30 @@ spec:
         resources: {}
         imagePullPolicy: Always
         env:
-          - name: RABBIT_MQ_URI
+          # rabbitmq
+          - name: MQ_USER
+            value: guest
+          - name: MQ_PASS
+            value: guest
+          - name: MQ_ADDR
             valueFrom:
               configMapKeyRef:
                 key: rabbitmq-uri
                 name: kubestore-config
-          - name: POSTGRES_URI
+          # postgres
+          - name: DB_ADDR
             valueFrom:
               configMapKeyRef:
                 key: postgrestore-uri
                 name: kubestore-config
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                key: postgres-db-user
+                name: db-secrets
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                key: postgres-db-pass
+                name: db-secrets
       restartPolicy: Always
