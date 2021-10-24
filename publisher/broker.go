@@ -1,8 +1,8 @@
 package main
 
 import (
+	"fmt"
 	"github.com/streadway/amqp"
-	"os"
 )
 
 type broker struct {
@@ -10,8 +10,9 @@ type broker struct {
 	ch   *amqp.Channel
 }
 
-func newBroker() (*broker, error) {
-	conn, err := amqp.Dial("amqp://guest:guest@" + os.Getenv("RABBIT_MQ_URI"))
+func newBroker(user, pass, addr string) (*broker, error) {
+	uri := fmt.Sprintf("amqp://%s:%s@%s", user, pass, addr)
+	conn, err := amqp.Dial(uri)
 	if err != nil {
 		return nil, err
 	}

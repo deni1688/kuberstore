@@ -19,11 +19,16 @@ spec:
         ports:
           - containerPort: 8888
         env:
-        - name: RABBIT_MQ_URI
-          valueFrom:
-            configMapKeyRef:
-              key: rabbitmq-uri
-              name: kubestore-config
+          - name: MQ_USER
+            value: guest
+          - name: MQ_PASS
+            value: guest
+          - name: MQ_ADDR
+            valueFrom:
+              configMapKeyRef:
+                key: rabbitmq-uri
+                name: kubestore-config
+
       restartPolicy: Always
 
 ---
