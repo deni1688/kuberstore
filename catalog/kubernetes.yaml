@@ -29,9 +29,15 @@ spec:
                 name: kubestore-config
           # mongo
           - name: DB_USER
-            value: admin
+            valueFrom:
+              secretKeyRef:
+                key: mongo-db-user
+                name: db-secrets
           - name: DB_PASS
-            value: admin123
+            valueFrom:
+              secretKeyRef:
+                key: mongo-db-pass
+                name: db-secrets
           - name: DB_ADDR
             valueFrom:
               configMapKeyRef:
