@@ -28,7 +28,6 @@ spec:
               configMapKeyRef:
                 key: rabbitmq-uri
                 name: kubestore-config
-
       restartPolicy: Always
 
 ---
