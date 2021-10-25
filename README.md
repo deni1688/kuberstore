@@ -1,5 +1,5 @@
 # kuberstore [K8s Exploration]
-This is a exploration project for kubernetes on the context of a microservice architecture. 
+This is a exploration project for kubernetes in the context of a microservice architecture. 
 
 ### Actors
 * [React TS] Simple client for adding a product
