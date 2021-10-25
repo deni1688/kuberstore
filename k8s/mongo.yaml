@@ -20,9 +20,15 @@ spec:
             - containerPort: 27017
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
-              value: admin
+              valueFrom:
+                secretKeyRef:
+                  key: mongo-db-user
+                  name: db-secrets
             - name: MONGO_INITDB_ROOT_PASSWORD
-              value: admin123
+              valueFrom:
+                secretKeyRef:
+                  key: mongo-db-pass
+                  name: db-secrets
       restartPolicy: Always
   selector:
     matchLabels:
